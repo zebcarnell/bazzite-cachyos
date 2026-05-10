@@ -1,0 +1,36 @@
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+name: bazzite-cachyos
+description: Bazzite Deck GNOME with the CachyOS kernel and commonly-layered packages baked in.
+base-image: ghcr.io/ublue-os/bazzite-deck-gnome
+image-version: stable
+
+modules:
+  - type: rpm-ostree
+    repos:
+      - https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos/repo/fedora-%OS_VERSION%/bieszczaders-kernel-cachyos-fedora-%OS_VERSION%.repo
+    remove:
+      - kernel
+      - kernel-common
+      - kernel-core
+      - kernel-modules
+      - kernel-modules-core
+      - kernel-modules-extra
+      - kernel-modules-akmods
+      - kernel-devel
+      - kernel-devel-matched
+    install:
+      # CachyOS kernel + matched devel
+      - kernel-cachyos
+      - kernel-cachyos-devel-matched
+
+      # Previously rpm-ostree-layered on the host, baked into the image
+      - cockpit
+      - cockpit-machines
+      - corectrl
+      - hwloc-devel
+      - libstdc++-static
+      - libuv-static
+      - rocm-hip
+      - virt-manager
+
+  - type: signing

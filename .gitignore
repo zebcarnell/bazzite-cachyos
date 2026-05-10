@@ -1,0 +1,8 @@
+# cosign private key — never commit
+cosign.key
+cosign.private
+*.key
+
+# local build artifacts
+/Containerfile
+/output/
