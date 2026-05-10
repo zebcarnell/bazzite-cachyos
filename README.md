@@ -51,8 +51,19 @@ cosign verify --key cosign.pub ghcr.io/zebcarnell/bazzite-cachyos
 
 ## Notes
 
-- **Module choice.** This recipe uses the `rpm-ostree` module. The newer `dnf` module (with `replace:` for kernel swap) is the more idiomatic option for Bazzite's bootc-based builds — switch if anything misbehaves.
+- **Module choice.** Kernel swap is done via a shell script (`files/scripts/install-cachyos-kernel.sh`) rather than the declarative `rpm-ostree`/`dnf` modules, because rpm-ostree's `kernel-install` + dracut hooks fire during the install before `depmod` populates `modules.dep`, causing dracut to fail. The script stubs those hooks, swaps the kernel, then runs depmod + dracut manually.
 - **Auto-updates on the host.** Rebasing only changes what you track. The system still needs to run `rpm-ostree upgrade` (or whatever timer/auto-update service is enabled) to pull each new build. Reboot to apply.
+
+## Secure Boot
+
+The CachyOS kernel is **not signed with a key trusted by Fedora's shim**, so it will fail to boot on any UEFI system with Secure Boot enabled (you'll see `bad shim signature` / `you need to load the kernel first` from GRUB).
+
+Two options before rebasing:
+
+1. **Disable Secure Boot in firmware** (simplest). Reboot into your UEFI setup, turn it off, save, reboot.
+2. **Enroll the CachyOS signing key via MOK** (keeps Secure Boot on). The bieszczaders COPR ships a signing key; you'd need to import it into shim's MOK list. See the [bieszczaders/kernel-cachyos COPR notes](https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos/) for the current procedure.
+
+For VM testing with `virt-install`, pass `--boot firmware=efi,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no`.
 
 ## Maintenance & Fedora major version transitions
 
