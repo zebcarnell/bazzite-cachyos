@@ -19,8 +19,13 @@ modules:
       - kernel-devel
       - kernel-devel-matched
     install:
-      # CachyOS kernel + matched devel
+      # CachyOS kernel — install subpackages explicitly so modules.dep
+      # (in -core) and the modules tree (-modules) are guaranteed present
+      # during dracut/initramfs generation.
       - kernel-cachyos
+      - kernel-cachyos-core
+      - kernel-cachyos-modules
+      - kernel-cachyos-devel
       - kernel-cachyos-devel-matched
 
       # Previously rpm-ostree-layered on the host, baked into the image

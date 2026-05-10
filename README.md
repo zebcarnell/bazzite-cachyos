@@ -3,7 +3,7 @@
 Custom [BlueBuild](https://blue-build.org/) image: **Bazzite Deck GNOME** with the **CachyOS kernel** swapped in at build time, plus a handful of packages I would otherwise rpm-ostree-layer on the host.
 
 Base image: `ghcr.io/ublue-os/bazzite-deck-gnome:stable`
-Output image: `ghcr.io/<YOUR-USERNAME>/bazzite-cachyos:latest`
+Output image: `ghcr.io/zebcarnell/bazzite-cachyos:latest`
 
 ## What's in it
 
@@ -46,7 +46,7 @@ sudo rpm-ostree uninstall \
 ## Verifying signatures
 
 ```bash
-cosign verify --key cosign.pub ghcr.io/<YOUR-USERNAME>/bazzite-cachyos
+cosign verify --key cosign.pub ghcr.io/zebcarnell/bazzite-cachyos
 ```
 
 ## Notes

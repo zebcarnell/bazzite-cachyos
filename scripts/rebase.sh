@@ -4,13 +4,8 @@
 
 set -euo pipefail
 
-GH_USER="${GH_USER:-<YOUR-USERNAME>}"
+GH_USER="${GH_USER:-zebcarnell}"
 IMAGE="${IMAGE:-ghcr.io/${GH_USER}/bazzite-cachyos:latest}"
-
-if [[ "$GH_USER" == "<YOUR-USERNAME>" ]]; then
-  echo "Set GH_USER=your-github-username (or edit this script) before running." >&2
-  exit 1
-fi
 
 echo ">>> Rebasing to ${IMAGE}"
 sudo rpm-ostree rebase "ostree-image-signed:docker://${IMAGE}"
