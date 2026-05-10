@@ -5,30 +5,17 @@ base-image: ghcr.io/ublue-os/bazzite-deck-gnome
 image-version: stable
 
 modules:
-  - type: rpm-ostree
-    repos:
-      - https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos/repo/fedora-%OS_VERSION%/bieszczaders-kernel-cachyos-fedora-%OS_VERSION%.repo
-    remove:
-      - kernel
-      - kernel-common
-      - kernel-core
-      - kernel-modules
-      - kernel-modules-core
-      - kernel-modules-extra
-      - kernel-modules-akmods
-      - kernel-devel
-      - kernel-devel-matched
-    install:
-      # CachyOS kernel — install subpackages explicitly so modules.dep
-      # (in -core) and the modules tree (-modules) are guaranteed present
-      # during dracut/initramfs generation.
-      - kernel-cachyos
-      - kernel-cachyos-core
-      - kernel-cachyos-modules
-      - kernel-cachyos-devel
-      - kernel-cachyos-devel-matched
+  # Kernel swap is done via a shell script because rpm-ostree's kernel-install
+  # + dracut hooks fire during the kernel install before depmod has populated
+  # modules.dep. The script stubs those hooks, swaps the kernel, and then
+  # generates the initramfs manually. See files/scripts/install-cachyos-kernel.sh.
+  - type: script
+    scripts:
+      - install-cachyos-kernel.sh
 
-      # Previously rpm-ostree-layered on the host, baked into the image
+  # Bake in the packages I'd otherwise rpm-ostree-layer on the host.
+  - type: rpm-ostree
+    install:
       - cockpit
       - cockpit-machines
       - corectrl
